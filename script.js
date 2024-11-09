@@ -2,7 +2,7 @@ const months = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
 function ageCalculate() {
   let today = new Date();
-  let inputDate = new Date(document.getElementById("date").value);
+  let inputDate = new Date(document.getElementById("birthday").value);
   let birthMonth, birthDate, birthYear;
   let birthDetails = {
     date: inputDate.getDate(),
@@ -13,7 +13,7 @@ function ageCalculate() {
   let currentMonth = today.getMonth() + 1;
   let currentDate = today.getDate();
 
-  leapChecker(currentYear);
+  leapChecker(birthDetails.year);
 
   if (
     birthDetails.year > currentYear ||
@@ -40,7 +40,7 @@ function ageCalculate() {
     birthDate = currentDate - birthDetails.date;
   } else {
     birthMonth--;
-    let days = months[currentMonth - 2];
+    let days = months[(currentMonth - 2 + 12) % 12]; // Adjust for negative index
     birthDate = days + currentDate - birthDetails.date;
     if (birthMonth < 0) {
       birthMonth = 11;
@@ -51,15 +51,19 @@ function ageCalculate() {
 }
 
 function displayResult(bDate, bMonth, bYear) {
-  document.getElementById("years").textContent = bYear;
-  document.getElementById("months").textContent = bMonth;
-  document.getElementById("days").textContent = bDate;
+  document.getElementsByClassName("years")[0].textContent = bYear;
+  document.getElementsByClassName("months")[0].textContent = bMonth;
+  document.getElementsByClassName("days")[0].textContent = bDate;
 }
 
 function leapChecker(year) {
-  if (year % 4 == 0 || (year % 100 == 0 && year % 400 == 0)) {
+  if (year % 4 == 0 && (year % 100 !== 0 || year % 400 == 0)) {
     months[1] = 29;
   } else {
     months[1] = 28;
   }
 }
+
+const calculate = document.querySelector("#calculate");
+
+calculate.addEventListener("click", ageCalculate);
